@@ -147,13 +147,13 @@ Iterating keys
     True
 
     In [21]: user.metadata.values()
-    ['key']
-
-    In [22]: user.metadata.keys()
     ['value']
 
+    In [22]: user.metadata.keys()
+    ['key']
+
     In [23]: user.metadata.items()
-    [('value', 'key')]
+    [('key', 'value')]
 
 Incrementing keys
 .................
