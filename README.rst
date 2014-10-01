@@ -36,6 +36,8 @@ Usage
 
 With django-metadata you can attach metadata to any Django models.
 
+Currently only Redis_ is supported.
+
 Let's say you have this model: ::
 
     # models.py
@@ -168,3 +170,5 @@ As we are using Redis as storing engine you can use some of its nice features ::
     3
 
 .. _GitHub: https://github.com/thoas/django-metadata
+.. _redis-py: https://github.com/andymccurdy/redis-py
+.. _Redis: http://redis.io/
