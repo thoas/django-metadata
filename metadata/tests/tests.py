@@ -101,7 +101,8 @@ class MetadataTest(Exam, TestCase):
 
         poll = self.poll.refresh()
 
-        assert poll.metadata.values() == ['value2', 'value1']
+        self.assertIn('value2', poll.metadata.values())
+        self.assertIn('value1', poll.metadata.values())
 
     def test_keys(self):
         keys = {
@@ -113,4 +114,5 @@ class MetadataTest(Exam, TestCase):
 
         poll = self.poll.refresh()
 
-        assert poll.metadata.keys() == ['key2', 'key1']
+        self.assertIn('key2', poll.metadata.keys())
+        self.assertIn('key1', poll.metadata.keys())
