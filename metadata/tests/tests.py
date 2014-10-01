@@ -1,0 +1,105 @@
+from django.test import TestCase
+from django.utils import timezone as datetime
+
+from exam import fixture, before, Exam
+
+from metadata.connection import client
+
+from .models import Poll
+
+
+class MetadataTest(Exam, TestCase):
+    @before
+    def flush_database(self):
+        client.flushdb()
+
+    @fixture
+    def poll(self):
+        return Poll.objects.create(question='What\'s your favorite color', pub_date=datetime.now())
+
+    def test_basic_storing(self):
+        self.poll.metadata['key'] = 'value'
+
+        poll = self.poll.refresh()
+
+        assert poll.metadata['key'] == 'value'
+
+        self.poll.metadata = {
+            'key': 'valeur'
+        }
+
+        poll = self.poll.refresh()
+
+        assert poll.metadata['key'] == 'valeur'
+
+    def test_delete_key(self):
+        self.poll.metadata['key'] = 'value'
+
+        self.poll.metadata['key'] = None
+
+        poll = self.poll.refresh()
+
+        self.assertNotIn('key', poll.metadata)
+
+        poll.metadata['key'] = 'value'
+
+        poll = self.poll.refresh()
+
+        self.assertIn('key', poll.metadata)
+
+        poll.metadata = {
+            'key': None
+        }
+
+        poll = self.poll.refresh()
+
+        self.assertNotIn('key', poll.metadata)
+
+        with self.assertRaises(KeyError):
+            poll.metadata['key']
+
+        assert poll.metadata.get('key', None) is None
+
+    def test_iteration(self):
+        keys = {
+            'key1': 'value',
+            'key2': 'value',
+        }
+
+        self.poll.metadata = keys
+
+        poll = self.poll.refresh()
+
+        for k, v in poll.metadata.items():
+            assert keys[k] == v
+
+    def test_incr(self):
+        self.poll.metadata.incr('key', 2)
+
+        poll = self.poll.refresh()
+
+        assert int(poll.metadata['key']) == 2
+
+    def test_values(self):
+        keys = {
+            'key1': 'value1',
+            'key2': 'value2',
+        }
+
+        self.poll.metadata = keys
+
+        poll = self.poll.refresh()
+
+        assert poll.metadata.values() == ['value2', 'value1']
+
+    def test_keys(self):
+        keys = {
+            'key1': 'value1',
+            'key2': 'value2',
+        }
+
+        self.poll.metadata = keys
+
+        poll = self.poll.refresh()
+
+        assert poll.metadata.keys() == ['key2', 'key1']
