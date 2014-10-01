@@ -34,7 +34,8 @@ Installation
 Usage
 -----
 
-With ``django-metadata`` you can attach metadata to any Django models.
+With ``django-metadata`` you can attach metadata to any Django models, you will
+be able to links keys and theirs values to any instances.
 
 Currently only Redis_ is supported with only redis-py_ as backend.
 
@@ -89,17 +90,17 @@ Adding keys
 
     In [2]: user = User.objects.create(username='thoas')
 
-    In [3]: user.metadata['key'] = 'value'
+    In [3]: user.metadata['mail_signup_sent'] = 1
 
     In [4]: user = User.objects.get(username='thoas')
 
-    In [5]: user.metadata['key']
-    value
+    In [5]: user.metadata['mail_signup_sent']
+    1
 
-    In [6]: user.metadata = {'key': 'value1'}
+    In [6]: user.metadata = {'mail_signup_sent': 0}
 
-    In [7]: user.metadata['key']
-    value1
+    In [7]: user.metadata['mail_signup_sent']
+    0
 
 
 Removing keys
@@ -117,16 +118,16 @@ operator.
     In [10]: user.metadata.get('key', None)
     None
 
-    In [11]: user.metadata['value'] = 'key'
+    In [11]: user.metadata['foo'] = 'bar'
 
-    In [12]: user.metadata['value'] = None
+    In [12]: user.metadata['foo'] = None
 
-    In [13]: user.metadata['value'] # will raises a KeyError
+    In [13]: user.metadata['foo'] # will raises a KeyError
 
-    In [14]: user.metadata.get('key', None)
+    In [14]: user.metadata.get('foo', None)
     None
 
-    In [15]: user.metadata['value'] = 'key'
+    In [15]: user.metadata['key'] = 'value'
 
     In [16]: user.metadata['foo'] = 'bar'
 
@@ -134,8 +135,8 @@ operator.
 
     In [18]: user.metadata['foo'] # will raises a KeyError
 
-    In [19]: user.metadata['value']
-    key
+    In [19]: user.metadata['key']
+    value
 
 Iterating keys
 ..............
