@@ -60,6 +60,17 @@ class MetadataTest(Exam, TestCase):
 
         assert poll.metadata.get('key', None) is None
 
+        poll.metadata = {
+            'key': None
+        }
+
+        del poll.metadata['key']
+
+        with self.assertRaises(KeyError):
+            poll.metadata['key']
+
+        assert poll.metadata.get('key', None) is None
+
     def test_iteration(self):
         keys = {
             'key1': 'value',

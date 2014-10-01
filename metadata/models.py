@@ -66,6 +66,9 @@ class MetadataContainer(object):
     def incr(self, key, incrby=1):
         return self.connection.hincrby(self.key, key, incrby)
 
+    def __delitem__(self, key):
+        self.connection.hdel(self.key, key)
+
     def __getitem__(self, key):
         if key in self.metadata:
             return self.metadata[key]
@@ -88,9 +91,6 @@ class MetadataContainer(object):
             return self[key]
         except KeyError:
             return default
-
-    def getlist(self, key):
-        return self.metadata.getlist(key) or []
 
     def iteritems(self):
         for item in self.metadata.items():
