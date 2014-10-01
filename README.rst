@@ -34,9 +34,9 @@ Installation
 Usage
 -----
 
-With django-metadata you can attach metadata to any Django models.
+With ``django-metadata`` you can attach metadata to any Django models.
 
-Currently only Redis_ is supported.
+Currently only Redis_ is supported with only redis-py_ as backend.
 
 Let's say you have this model: ::
 
@@ -58,7 +58,7 @@ Now you have to attach the ``MetadataMixin`` to your model ::
     class User(MetadataMixin, models.Model):
         username = models.Charfield(max_length=150)
 
-You can customize the way django-metadata is storing your values by providing
+You can customize the way ``django-metadata`` is storing your values by providing
 a ``metadata_key`` property to your model ::
 
     # models.py
@@ -169,6 +169,12 @@ As we are using Redis as storing engine you can use some of its nice features ::
     In [27]: user.metadata['counter']
     3
 
+Inspiration
+-----------
+
+``django-metadata`` comes from an original idea of twidi_.
+
 .. _GitHub: https://github.com/thoas/django-metadata
 .. _redis-py: https://github.com/andymccurdy/redis-py
 .. _Redis: http://redis.io/
+.. _twidi: https://github.com/twidi
