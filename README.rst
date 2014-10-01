@@ -35,7 +35,7 @@ Usage
 -----
 
 With ``django-metadata`` you can attach metadata to any Django models, you will
-be able to links keys and theirs values to any instances.
+be able to link keys and theirs values to any instances.
 
 Currently only Redis_ is supported with only redis-py_ as backend.
 
