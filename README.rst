@@ -27,7 +27,7 @@ This library is compatible with:
 Installation
 ------------
 
-1. Either check out the package from GitHub_ or it pull from a release via PyPI ::
+Either check out the package from GitHub_ or it pull from a release via PyPI::
 
        pip install django-metadata
 
