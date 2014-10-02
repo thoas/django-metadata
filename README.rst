@@ -46,7 +46,7 @@ Let's say you have this model: ::
     from django.db import models
 
     class User(models.Model):
-        username = models.Charfield(max_length=150)
+        username = models.CharField(max_length=150)
 
 Now you have to attach the ``MetadataMixin`` to your model ::
 
@@ -57,7 +57,7 @@ Now you have to attach the ``MetadataMixin`` to your model ::
     from metadata.mixins import MetadataMixin
 
     class User(MetadataMixin, models.Model):
-        username = models.Charfield(max_length=150)
+        username = models.CharField(max_length=150)
 
 You can customize the way ``django-metadata`` is storing your values by providing
 a ``metadata_key`` property to your model ::
@@ -69,7 +69,7 @@ a ``metadata_key`` property to your model ::
     from metadata.mixins import MetadataMixin
 
     class User(MetadataMixin, models.Model):
-        username = models.Charfield(max_length=150)
+        username = models.CharField(max_length=150)
 
         def metadata_key(self):
             return 'metadata:utilisateur:%d' % self.pk
