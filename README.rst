@@ -93,20 +93,14 @@ Adding keys
 
 .. code-block:: python
 
-    In [1]: from myapp.models import User
-
-    In [2]: user = User.objects.create(username='thoas')
-
-    In [3]: user.metadata['mail_signup_sent'] = 1
-
-    In [4]: user = User.objects.get(username='thoas')
-
-    In [5]: user.metadata['mail_signup_sent']
+    >>> from myapp.models import User
+    >>> user = User.objects.create(username='thoas')
+    >>> user.metadata['mail_signup_sent'] = 1
+    >>> user = User.objects.get(username='thoas')
+    >>> user.metadata['mail_signup_sent']
     1
-
-    In [6]: user.metadata = {'mail_signup_sent': 0}
-
-    In [7]: user.metadata['mail_signup_sent']
+    >>> user.metadata = {'mail_signup_sent': 0}
+    >>> user.metadata['mail_signup_sent']
     0
 
 
@@ -118,31 +112,29 @@ operator.
 
 .. code-block:: python
 
-    In [8]: del user.metadata['key']
-
-    In [9]: user.metadata['key'] # will raises a KeyError
-
-    In [10]: user.metadata.get('key', None)
+    >>> del user.metadata['key']
+    >>> user.metadata['key']
+    Traceback (most recent call last):
+        ...
+    KeyError: 'key'
+    >>> user.metadata.get('key', None)
     None
-
-    In [11]: user.metadata['foo'] = 'bar'
-
-    In [12]: user.metadata['foo'] = None
-
-    In [13]: user.metadata['foo'] # will raises a KeyError
-
-    In [14]: user.metadata.get('foo', None)
+    >>> user.metadata['foo'] = 'bar'
+    >>> user.metadata['foo'] = None
+    >>> user.metadata['foo']
+    Traceback (most recent call last):
+        ...
+    KeyError: 'foo'
+    >>> user.metadata.get('foo', None)
     None
-
-    In [15]: user.metadata['key'] = 'value'
-
-    In [16]: user.metadata['foo'] = 'bar'
-
-    In [17]: user.metadata = {'foo': None}
-
-    In [18]: user.metadata['foo'] # will raises a KeyError
-
-    In [19]: user.metadata['key']
+    >>> user.metadata['key'] = 'value'
+    >>> user.metadata['foo'] = 'bar'
+    >>> user.metadata = {'foo': None}
+    >>> user.metadata['foo']
+    Traceback (most recent call last):
+        ...
+    KeyError: 'foo'
+    >>> user.metadata['key']
     value
 
 Iterating keys
@@ -150,16 +142,13 @@ Iterating keys
 
 .. code-block:: python
 
-    In [20]: 'value' in user.metadata
+    >>> 'value' in user.metadata
     True
-
-    In [21]: user.metadata.values()
+    >>> user.metadata.values()
     ['value']
-
-    In [22]: user.metadata.keys()
+    >>> user.metadata.keys()
     ['key']
-
-    In [23]: user.metadata.items()
+    >>> user.metadata.items()
     [('key', 'value')]
 
 Incrementing keys
@@ -169,14 +158,11 @@ As we are using Redis as storing engine you can use some of its nice features:
 
 .. code-block:: python
 
-    In [24]: user.metadata.incr('counter')
-
-    In [25]: user.metadata['counter']
+    >>> user.metadata.incr('counter')
+    >>> user.metadata['counter']
     1
-
-    In [26]: user.metadata.incr('counter', 2)
-
-    In [27]: user.metadata['counter']
+    >>> user.metadata.incr('counter', 2)
+    >>> user.metadata['counter']
     3
 
 Inspiration
