@@ -39,7 +39,9 @@ be able to link keys and theirs values to any instances.
 
 Currently only Redis_ is supported with only redis-py_ as backend.
 
-Let's say you have this model: ::
+Let's say you have this model:
+
+.. code-block:: python
 
     # models.py
 
@@ -48,7 +50,9 @@ Let's say you have this model: ::
     class User(models.Model):
         username = models.CharField(max_length=150)
 
-Now you have to attach the ``MetadataMixin`` to your model ::
+Now you have to attach the ``MetadataMixin`` to your model:
+
+.. code-block:: python
 
     # models.py
 
@@ -59,8 +63,11 @@ Now you have to attach the ``MetadataMixin`` to your model ::
     class User(MetadataMixin, models.Model):
         username = models.CharField(max_length=150)
 
+
 You can customize the way ``django-metadata`` is storing your values by providing
-a ``metadata_key`` property to your model ::
+a ``metadata_key`` property to your model:
+
+.. code-block:: python
 
     # models.py
 
@@ -84,7 +91,7 @@ The API of ``MetadataContainer`` follows the same principes as ``dict``.
 Adding keys
 ...........
 
-::
+.. code-block:: python
 
     In [1]: from myapp.models import User
 
@@ -109,7 +116,7 @@ Removing keys
 You can either removing a key by setting its value to ``None`` or use the ``del``
 operator.
 
-::
+.. code-block:: python
 
     In [8]: del user.metadata['key']
 
@@ -141,7 +148,7 @@ operator.
 Iterating keys
 ..............
 
-::
+.. code-block:: python
 
     In [20]: 'value' in user.metadata
     True
@@ -158,7 +165,9 @@ Iterating keys
 Incrementing keys
 .................
 
-As we are using Redis as storing engine you can use some of its nice features ::
+As we are using Redis as storing engine you can use some of its nice features:
+
+.. code-block:: python
 
     In [24]: user.metadata.incr('counter')
 
