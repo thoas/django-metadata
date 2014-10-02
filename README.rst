@@ -27,7 +27,7 @@ This library is compatible with:
 Installation
 ------------
 
-1. Either check out the package from GitHub_ or it pull from a release via PyPI ::
+Either check out the package from GitHub_ or it pull from a release via PyPI::
 
        pip install django-metadata
 
@@ -39,16 +39,20 @@ be able to link keys and theirs values to any instances.
 
 Currently only Redis_ is supported with only redis-py_ as backend.
 
-Let's say you have this model: ::
+Let's say you have this model:
+
+.. code-block:: python
 
     # models.py
 
     from django.db import models
 
     class User(models.Model):
-        username = models.Charfield(max_length=150)
+        username = models.CharField(max_length=150)
 
-Now you have to attach the ``MetadataMixin`` to your model ::
+Now you have to attach the ``MetadataMixin`` to your model:
+
+.. code-block:: python
 
     # models.py
 
@@ -57,10 +61,13 @@ Now you have to attach the ``MetadataMixin`` to your model ::
     from metadata.mixins import MetadataMixin
 
     class User(MetadataMixin, models.Model):
-        username = models.Charfield(max_length=150)
+        username = models.CharField(max_length=150)
+
 
 You can customize the way ``django-metadata`` is storing your values by providing
-a ``metadata_key`` property to your model ::
+a ``metadata_key`` property to your model:
+
+.. code-block:: python
 
     # models.py
 
@@ -69,7 +76,7 @@ a ``metadata_key`` property to your model ::
     from metadata.mixins import MetadataMixin
 
     class User(MetadataMixin, models.Model):
-        username = models.Charfield(max_length=150)
+        username = models.CharField(max_length=150)
 
         def metadata_key(self):
             return 'metadata:utilisateur:%d' % self.pk
@@ -84,22 +91,16 @@ The API of ``MetadataContainer`` follows the same principes as ``dict``.
 Adding keys
 ...........
 
-::
+.. code-block:: python
 
-    In [1]: from myapp.models import User
-
-    In [2]: user = User.objects.create(username='thoas')
-
-    In [3]: user.metadata['mail_signup_sent'] = 1
-
-    In [4]: user = User.objects.get(username='thoas')
-
-    In [5]: user.metadata['mail_signup_sent']
+    >>> from myapp.models import User
+    >>> user = User.objects.create(username='thoas')
+    >>> user.metadata['mail_signup_sent'] = 1
+    >>> user = User.objects.get(username='thoas')
+    >>> user.metadata['mail_signup_sent']
     1
-
-    In [6]: user.metadata = {'mail_signup_sent': 0}
-
-    In [7]: user.metadata['mail_signup_sent']
+    >>> user.metadata = {'mail_signup_sent': 0}
+    >>> user.metadata['mail_signup_sent']
     0
 
 
@@ -109,65 +110,59 @@ Removing keys
 You can either removing a key by setting its value to ``None`` or use the ``del``
 operator.
 
-::
+.. code-block:: python
 
-    In [8]: del user.metadata['key']
-
-    In [9]: user.metadata['key'] # will raises a KeyError
-
-    In [10]: user.metadata.get('key', None)
+    >>> del user.metadata['key']
+    >>> user.metadata['key']
+    Traceback (most recent call last):
+        ...
+    KeyError: 'key'
+    >>> user.metadata.get('key', None)
     None
-
-    In [11]: user.metadata['foo'] = 'bar'
-
-    In [12]: user.metadata['foo'] = None
-
-    In [13]: user.metadata['foo'] # will raises a KeyError
-
-    In [14]: user.metadata.get('foo', None)
+    >>> user.metadata['foo'] = 'bar'
+    >>> user.metadata['foo'] = None
+    >>> user.metadata['foo']
+    Traceback (most recent call last):
+        ...
+    KeyError: 'foo'
+    >>> user.metadata.get('foo', None)
     None
-
-    In [15]: user.metadata['key'] = 'value'
-
-    In [16]: user.metadata['foo'] = 'bar'
-
-    In [17]: user.metadata = {'foo': None}
-
-    In [18]: user.metadata['foo'] # will raises a KeyError
-
-    In [19]: user.metadata['key']
+    >>> user.metadata['key'] = 'value'
+    >>> user.metadata['foo'] = 'bar'
+    >>> user.metadata = {'foo': None}
+    >>> user.metadata['foo']
+    Traceback (most recent call last):
+        ...
+    KeyError: 'foo'
+    >>> user.metadata['key']
     value
 
 Iterating keys
 ..............
 
-::
+.. code-block:: python
 
-    In [20]: 'value' in user.metadata
+    >>> 'value' in user.metadata
     True
-
-    In [21]: user.metadata.values()
+    >>> user.metadata.values()
     ['value']
-
-    In [22]: user.metadata.keys()
+    >>> user.metadata.keys()
     ['key']
-
-    In [23]: user.metadata.items()
+    >>> user.metadata.items()
     [('key', 'value')]
 
 Incrementing keys
 .................
 
-As we are using Redis as storing engine you can use some of its nice features ::
+As we are using Redis as storing engine you can use some of its nice features:
 
-    In [24]: user.metadata.incr('counter')
+.. code-block:: python
 
-    In [25]: user.metadata['counter']
+    >>> user.metadata.incr('counter')
+    >>> user.metadata['counter']
     1
-
-    In [26]: user.metadata.incr('counter', 2)
-
-    In [27]: user.metadata['counter']
+    >>> user.metadata.incr('counter', 2)
+    >>> user.metadata['counter']
     3
 
 Inspiration
