@@ -1,6 +1,6 @@
 language: python
-service:
-  - redis
+services:
+  - redis-server
 python:
   - 2.7
 install: pip install tox --use-mirrors
