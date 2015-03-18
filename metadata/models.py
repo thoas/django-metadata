@@ -60,6 +60,16 @@ class MetadataContainer(object):
 
         return container
 
+    def get_or_set(self, key, func):
+        value = self.get(key)
+
+        if value is None:
+            value = func()
+
+            self[key] = value
+
+        return value
+
     def reload(self):
         self._metadata = self.connection.hgetall(self.key) or {}
 

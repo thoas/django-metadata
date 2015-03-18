@@ -32,6 +32,13 @@ class MetadataTest(Exam, TestCase):
 
         assert poll.metadata['key'] == 'valeur'
 
+    def test_get_or_set(self):
+        assert self.poll.metadata.get_or_set('key', lambda: 'value') == 'value'
+
+        assert self.poll.metadata['key'] == 'value'
+
+        assert self.poll.metadata.get_or_set('key', lambda: 'test') == 'value'
+
     def test_delete_key(self):
         self.poll.metadata['key'] = 'value'
 
