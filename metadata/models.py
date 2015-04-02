@@ -1,3 +1,6 @@
+import six
+
+
 class MetadataContainer(object):
     def __init__(self, connection, key, instance=None):
         self._connection = connection
@@ -34,10 +37,10 @@ class MetadataContainer(object):
 
     def __set__(self, instance, metadata):
         to_update = dict((key, value)
-                         for key, value in metadata.iteritems()
+                         for key, value in six.iteritems(metadata)
                          if value is not None)
 
-        to_delete = [k for k, v in metadata.iteritems()
+        to_delete = [k for k, v in six.iteritems(metadata)
                      if v is None]
 
         container = self.__get__(instance)

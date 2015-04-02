@@ -1,7 +1,11 @@
 import six
 
 from django.core import exceptions
-from django.utils.importlib import import_module
+
+try:
+    from importlib import import_module
+except ImportError:
+    from django.utils.importlib import import_module  # noqa
 
 
 CLASS_PATH_ERROR = 'django-metadata is unable to interpret settings value for %s. '\
@@ -40,7 +44,7 @@ def load_class(class_path, setting_name=None):
 
     try:
         mod = import_module(class_module)
-    except ImportError, e:
+    except ImportError as e:
         if setting_name:
             txt = 'Error importing backend %s: "%s". Check your %s setting' % (
                 class_module, e, setting_name)
@@ -73,8 +77,10 @@ def get_client(connection, connection_class=None):
             raise exceptions.ImproperlyConfigured(
                 "The Redis backend requires redis-py to be installed.")
         if isinstance(connection, six.string_types):
-            client = redis.from_url(connection)
+            client = redis.from_url(connection, decode_responses=True)
         else:
+            connection['decode_responses'] = True
+
             client = redis.Redis(**connection)
 
     return client
