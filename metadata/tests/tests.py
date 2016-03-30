@@ -78,6 +78,20 @@ class MetadataTest(Exam, TestCase):
 
         assert poll.metadata.get('key', None) is None
 
+    def test_wildcard_delete(self):
+        self.poll.metadata['key_1'] = 'value'
+        self.poll.metadata['key_2'] = 'value'
+        self.poll.metadata['key_3'] = 'value'
+        self.poll.metadata['diff_key_3'] = 'value'
+
+        del self.poll.metadata['key_*']
+
+        poll = self.poll.refresh()
+
+        values = poll.metadata.keys()
+
+        assert values == ['diff_key_3']
+
     def test_iteration(self):
         keys = {
             'key1': 'value',

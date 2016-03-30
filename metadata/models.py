@@ -1,5 +1,7 @@
 import six
 
+from fnmatch import fnmatch
+
 
 class MetadataContainer(object):
     def __init__(self, connection, key, instance=None):
@@ -79,8 +81,22 @@ class MetadataContainer(object):
     def incr(self, key, incrby=1):
         return self.connection.hincrby(self.key, key, incrby)
 
+    def listkeys(self, key):
+        keys = [key, ]
+
+        if '*' in key:
+            keys = [result
+                    for result in self.connection.hkeys(self.key)
+                    if fnmatch(result, key)]
+
+        return keys
+
     def __delitem__(self, key):
-        self.connection.hdel(self.key, key)
+        with self.connection.pipeline() as pipe:
+            for key in self.listkeys(key):
+                pipe.hdel(self.key, key)
+
+            pipe.execute()
 
     def __getitem__(self, key):
         if key in self.metadata:
