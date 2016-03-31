@@ -92,6 +92,22 @@ class MetadataTest(Exam, TestCase):
 
         assert values == ['diff_key_3']
 
+        self.poll.metadata['key_3'] = 'value'
+
+        poll = self.poll.refresh()
+
+        values = poll.metadata.keys()
+
+        assert sorted(values) == sorted(['diff_key_3', 'key_3'])
+
+        del self.poll.metadata['*key*']
+
+        poll = self.poll.refresh()
+
+        values = poll.metadata.keys()
+
+        assert len(values) == 0
+
     def test_iteration(self):
         keys = {
             'key1': 'value',
