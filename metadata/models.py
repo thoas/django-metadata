@@ -52,6 +52,7 @@ class MetadataContainer(object):
     def __set__(self, instance, metadata):
         container = self.__get__(instance)
         container.set(metadata)
+        container.reload()
 
         return container
 
@@ -81,8 +82,6 @@ class MetadataContainer(object):
                 pipe.expire(hash_key, timeout)
 
             pipe.execute()
-
-        self.reload()
 
     def get_or_set(self, key, func):
         value = self.get(key)
@@ -124,10 +123,7 @@ class MetadataContainer(object):
         raise KeyError
 
     def __setitem__(self, key, value=None):
-        if value is None:
-            self.connection.hdel(self.key, key)
-        else:
-            self.connection.hset(self.key, key, value)
+        self.set({key: value})
 
     def __copy__(self, instance=None):
         return self.__class__(self._connection,
