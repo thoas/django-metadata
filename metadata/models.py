@@ -2,13 +2,16 @@ import six
 
 from fnmatch import fnmatch
 
+from . import compat, settings
+
 
 class MetadataContainer(object):
-    def __init__(self, connection, key, instance=None):
+    def __init__(self, connection, key, instance=None, default_timeout=settings.DEFAULT_TIMEOUT):
         self._connection = connection
         self._key = key
         self.loaded = False
         self.instance = instance
+        self.default_timeout = default_timeout
 
     @property
     def metadata(self):
@@ -37,7 +40,22 @@ class MetadataContainer(object):
 
         return self
 
+    def get_timeout(self, timeout):
+        if timeout is compat.DEFAULT_TIMEOUT:
+            timeout = self.default_timeout
+
+        if timeout is not None:
+            timeout = int(timeout)
+
+        return timeout
+
     def __set__(self, instance, metadata):
+        container = self.__get__(instance)
+        container.set(metadata)
+
+        return container
+
+    def set(self, metadata, timeout=compat.DEFAULT_TIMEOUT):
         to_update = dict((key, value)
                          for key, value in six.iteritems(metadata)
                          if value is not None)
@@ -45,25 +63,26 @@ class MetadataContainer(object):
         to_delete = [k for k, v in six.iteritems(metadata)
                      if v is None]
 
-        container = self.__get__(instance)
+        hash_key = self.key
 
-        redis = container.connection
+        exists = self.connection.exists(hash_key)
 
-        if to_delete:
-            redis = redis.pipeline()
+        with self.connection.pipeline() as pipe:
+            if to_update:
+                pipe.hmset(hash_key, to_update)
 
-        if to_update:
-            redis.hmset(container.key, to_update)
+            if to_delete:
+                for key in to_delete:
+                    pipe.hdel(hash_key, key)
 
-        if to_delete:
-            for key in to_delete:
-                redis.hdel(container.key, key)
+            timeout = self.get_timeout(timeout)
 
-            redis.execute()
+            if not exists and timeout:
+                pipe.expire(hash_key, timeout)
 
-        container.reload()
+            pipe.execute()
 
-        return container
+        self.reload()
 
     def get_or_set(self, key, func):
         value = self.get(key)
