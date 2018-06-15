@@ -23,7 +23,7 @@ INSTALLED_APPS = [
 
 SECRET_KEY = 'blabla'
 
-ROOT_URLCONF = 'fairepart.urls'
+ROOT_URLCONF = 'tests.urls'
 
 try:
     from .temp import *  # noqa
