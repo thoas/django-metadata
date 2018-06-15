@@ -23,8 +23,6 @@ INSTALLED_APPS = [
 
 SECRET_KEY = 'blabla'
 
-ROOT_URLCONF = 'tests.urls'
-
 try:
     from .temp import *  # noqa
 except ImportError:

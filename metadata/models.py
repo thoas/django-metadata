@@ -94,7 +94,9 @@ class MetadataContainer(object):
         return value
 
     def reload(self):
-        self._metadata = self.connection.hgetall(self.key) or {}
+        values = self.connection.hgetall(self.key)
+
+        self._metadata = values or {}
 
     def incr(self, key, incrby=1):
         return self.connection.hincrby(self.key, key, incrby)
